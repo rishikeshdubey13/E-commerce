@@ -1,9 +1,27 @@
 from django.shortcuts import render, redirect
-from .models import Product
+from .models import Product,Category
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from .forms import SignUpForm
 
 # Create your views here.
+
+def category(request,nm):
+    #replace - with space
+    nm = nm.replace('-',' ')
+    try:
+        category = Category.objects.get(name = nm)
+        products =Product.objects.filter(category  = category)
+        return render(request, 'category.html',{'category':category, 'products':products})
+    except:
+        messages.error(request,('This category does not exist'))
+        return redirect('home')
+
+def product(request,pk):
+    product = Product.objects.get(id=pk)
+    return render(request,'product.html', {'product': product})
+
 def home(request):
     products = Product.objects.all()
     return render(request,'home.html', {'products': products})
@@ -32,3 +50,24 @@ def logout_user(request):
     logout(request)
     messages.success(request, ('You are logged out!'))
     return redirect('home')
+
+
+def register(request):
+    form =SignUpForm()
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username = username, password = password)
+            login(request,user)
+            messages.success(request, 'You have successfully registered')
+            return redirect('login')
+        else:
+            messages.success(request, 'Error registering user')
+            return redirect('register')
+    else:   
+        return render(request,'register.html', {'form': form})
+    
+ 

@@ -7,6 +7,8 @@ import datetime
 #category of prdocts
 class Category(models.Model):
     name = models.CharField(max_length=50)
+    # price =  models.DecimalField(default= 0 , decimal_places= 2 , max_digits=7)
+    # rating = models.IntegerField(   )
 
     def __str__(self):
         return self.name
@@ -60,5 +62,6 @@ class Order(models.Model):
 
 #Customer Wishlist
 #class Wishlist(models.Model):
+    
 
 
