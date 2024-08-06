@@ -10,7 +10,83 @@
                 </div>
             </div>
         </header>
+        <br/>
         
-
+        <div class="container">
+            {% if cart_products %}
+            {% for product in cart_products %}
+                <div class="col-8">
+                    <br/><br/>
+                    <div class="card mb-3" >
+                        <div class="row g-0">
+                        <div class="col-md-4">
+                            {% if product.is_sale %}
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                            <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{product.name}}</h5>
+                                <p class="card-text">{{product.description}}</p>
+                                <strike>{{product.price}}</strike>
+                                {{product.sale_price}}
+                                <div class="row">
+                                    <div class = "col-md-2">Quantity:</div>
+                                      <div class = "col-md-2">
+                                        <select class="form-select form-select-sm" id = "qty-cart">
+                                            <option selected>
+                                                {%for key,value in quantities.items%}
+                                                    {% if key == product.id|slugify %}
+                                                        {{value}}
+                                                    {% endif %}
+                                                {%endfor%}
+                                            </option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="...">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{product.name}}</h5>
+                                    <p class="card-text">{{product.description}}</p>
+                                    {{product.price}}
+                                    <br>
+                                    <div class="row">
+                                        <div class = "col-md-2">Quantity:</div>
+                                          <div class = "col-md-2">
+                                            <select class="form-select form-select-sm" id = "qty-cart">
+                                                <option selected>
+                                                    {%for key,value in quantities.items%}
+                                                        {% if key == product.id|slugify %}
+                                                            {{value}}
+                                                        {% endif %}
+                                                    {%endfor%}
+                                                </option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                        <br>
+                                    <a href="{% url 'home' %}" class="btn btn-secondary">Go Back</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/><br/>
+                </div>
+            {% endfor %}
+            {% else %}
+            <h1>Cart is empty</h1>
+            {% endif %}
+            
+        </div>
 
 {% endblock %}
