@@ -7,6 +7,10 @@ from .forms import SignUpForm
 
 # Create your views here.
 
+def category_summary(request):
+    categories = Category.objects.all()
+    return render(request,'category_summary.html', {"categories": categories})
+
 def category(request,nm):
     #replace - with space
     nm = nm.replace('-',' ')
