@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect
 from .models import Product,Category
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm
+from .forms import SignUpForm, EditProfileForm
+from django import forms
 
 # Create your views here.
+
+
 
 def category_summary(request):
     categories = Category.objects.all()
@@ -73,5 +77,22 @@ def register(request):
             return redirect('register')
     else:   
         return render(request,'register.html', {'form': form})
+    
+
+
+def update_user(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id = request.user.id)
+        user_form = EditProfileForm(request.POST or None, instance = current_user)
+
+        if user_form.is_valid():
+            user_form.save()
+            login(request, current_user)
+            messages.success(request,('Your profile has been updated!'))
+            return redirect('home') 
+        return render(request,'update_user.html',{'user_form': user_form})
+    else:
+        messages.success(request,('login to access this page'))
+        return redirect('update_user')
     
  
