@@ -6,8 +6,23 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .forms import SignUpForm, EditProfileForm, ChangePasswordForm,UserInfoForm 
 from django import forms
+from django.db.models import Q
 
 # Create your views here.
+
+
+def search(request):
+    if request.method == 'POST':
+        searched = request.POST['searched']
+        #Query the the product model
+        searched = Product.objects.filter(Q(name__icontains = searched) | Q(description__icontains = searched))
+        if not searched:
+            messages.error(request,('No products found!'))
+            return render(request, 'search.html')
+        else:
+            return render(request, 'search.html',{'searched':searched})
+    else:
+        return render(request,'search.html')
 
 def update_info(request):
     if request.user.is_authenticated:
